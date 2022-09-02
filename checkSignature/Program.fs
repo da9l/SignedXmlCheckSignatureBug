@@ -25,10 +25,12 @@ type SignatureVerificationError =
     | IncorrectNumberOfSignatureNodes of int
     | FailedToLoadSignature of exn
     | SignatureInvalid of string
-    | Other
     
 let signedFiles = 
-    ["sampleFiles\signedNOT_OK_xdsNS_inSignatureNode.xml.txt";"sampleFiles\signedOK_xdsNS_inRoot.xml.txt"]
+    [
+        "sampleFiles\signedNOT_OK_xdsNS_inSignatureNode.xml.txt"
+        "sampleFiles\signedOK_xdsNS_inRoot.xml.txt"
+    ]
     |> List.map prependSrcDir
 
 let readFileAsUtf8 filePath =
@@ -43,12 +45,6 @@ let getSignatureElement (xml:XmlDocument) =
 
 
 let verifySignature (xml:string) =
-    // let xmlDocument = XmlDocument(PreserveWhitespace=true)
-    // let signedXml =
-    //     Result.protect xmlDocument.LoadXml xml
-    //     |> Result.mapError UnableToLoadFile
-    //     |> Result.map (fun () -> xmlDocument, (SignedXml xmlDocument))
-    //     |> Result.map 
     monad {
         let xmlDocument = XmlDocument(PreserveWhitespace=true)
         let! signedXml =
@@ -65,7 +61,6 @@ let verifySignature (xml:string) =
             |> function
             | true -> Ok "Signature valid!"
             | false -> Error <| (SignatureInvalid xml)
-
     }
     
 signedFiles
